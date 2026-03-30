@@ -1,0 +1,83 @@
+@startuml
+
+left to right direction
+
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor lightyellow
+  BorderColor black
+  FontSize 14
+}
+skinparam actor {
+  FontSize 14
+}
+skinparam ArrowFontSize 12
+skinparam padding 10
+skinparam nodesep 60
+skinparam ranksep 80
+
+actor User
+actor Teacher
+actor Admin
+
+Teacher --|> User
+Admin --|> User
+
+rectangle AvoLaptop {
+
+  rectangle "Casi d'uso comuni" {
+    usecase UC1 as "Registrazione"
+    usecase UC2 as "Login"
+    usecase UC3 as "Logout"
+    usecase UC4 as "Visualizzare PC disponibili"
+  }
+
+  rectangle "Prenotazione Generale" {
+    usecase UCTEACHER as "Prenotazione Generale"
+    usecase UC6 as "Prenotare PC per fascia oraria"
+    usecase UC7 as "Visualizzare proprie prenotazioni"
+    usecase UC8 as "Annullare propria prenotazione"
+  }
+
+  rectangle "Gestione Generale" {
+    usecase UCADMIN as "Gestione Generale"
+    usecase UC9 as "Approvare registrazione admin"
+    usecase UC10 as "Aggiungere laptop"
+    usecase UC11 as "Modificare laptop"
+    usecase UC12 as "Eliminare laptop"
+    usecase UC13 as "Aggiungere locker"
+    usecase UC14 as "Modificare locker"
+    usecase UC15 as "Eliminare locker"
+    usecase UC16 as "Visualizzare tutte le prenotazioni"
+    usecase UC17 as "Annullare qualsiasi prenotazione"
+    usecase UC18 as "Gestire utenti"
+  }
+
+}
+
+User --> UC1
+User --> UC2
+User --> UC3
+User --> UC4
+UC3 .> UC2 : <<include>>
+
+Teacher --> UCTEACHER
+UCTEACHER .> UC2 : <<include>>
+UCTEACHER --> UC6
+UCTEACHER --> UC7
+UCTEACHER --> UC8
+
+Admin --> UCADMIN
+UCADMIN .> UC2 : <<include>>
+UCADMIN --> UC9
+UCADMIN --> UC10
+UCADMIN --> UC11
+UCADMIN --> UC12
+UCADMIN --> UC13
+UCADMIN --> UC14
+UCADMIN --> UC15
+UCADMIN --> UC16
+UCADMIN --> UC17
+UCADMIN --> UC18
+
+@enduml

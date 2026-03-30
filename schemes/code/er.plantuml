@@ -1,0 +1,57 @@
+@startchen
+
+entity model {
+  id_model <<key>>
+  brand
+  model
+  cpu
+  ram
+  storage
+  os
+}
+
+entity laptop {
+  id_laptop <<key>>
+  status
+}
+
+entity locker {
+  id_locker <<key>>
+  name
+  location
+}
+
+entity user {
+  id_user <<key>>
+  name
+  surname
+  email
+  password
+  role
+}
+
+relationship reservation {
+  date
+  time_start
+  time_end
+  status
+}
+
+relationship described  {
+}
+
+relationship stored_in {
+}
+
+
+laptop -N- described
+described -1- model
+
+laptop -N- stored_in
+stored_in -1- locker
+
+user -M- reservation
+reservation -N- laptop
+
+
+@endchen
