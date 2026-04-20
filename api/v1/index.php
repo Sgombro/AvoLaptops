@@ -26,6 +26,8 @@ $numelements = count($uri_elements);
 //query da inviare
 $query = "";
 
+$_SESSION["logged"] = false; //sessione
+
 //$uri_elements;
 //echo $uri_elements;
 //print_r($uri_elements);
@@ -34,15 +36,15 @@ $query = "";
 
 switch ($_SERVER["REQUEST_METHOD"]) {
     case 'GET':
-
-        if (count($_GET) != 0) {
-
-            switch ($uri_elements[$called_resource]) {
-                case 'film':
+            switch ($called_resource) {
+                case 'homepage':
+                    include __DIR__ . "/home/homepage.php";
                     break;
+                
                 default:
-                    break;
-            }
+                $payload["status"] = "405 Method Not Allowed";
+                header("HTTP/1.1 405 Method Not Allowed");
+                break;
         }
 
 
@@ -56,22 +58,39 @@ switch ($_SERVER["REQUEST_METHOD"]) {
             case 'users':
                 include __DIR__ . "/access/signin.php";
                 break;
+            case 'logout':
+                include __DIR__ . "/access/logout.php";
+                break;
             
             default:
-                # code...
+                $payload["status"] = "405 Method Not Allowed";
+                header("HTTP/1.1 405 Method Not Allowed");
                 break;
         }
         break;
 
     case 'PUT':
+        switch ($called_resource) {
+            
+            default:
+                $payload["status"] = "405 Method Not Allowed";
+                header("HTTP/1.1 405 Method Not Allowed");
+                break;
+        }
         # code...
-        break;
 
-    case 'DELETE':
-        # code...
+    case 'DELETE':        
+        switch ($called_resource) {
+            default:
+                $payload["status"] = "405 Method Not Allowed";
+                header("HTTP/1.1 405 Method Not Allowed");
+                break;
+        }
         break;
-    default:
-        # code...
+    
+        default: 
+        $payload["status"] = "405 Method Not Allowed";
+        header("HTTP/1.1 405 Method Not Allowed");
         break;
 }
 

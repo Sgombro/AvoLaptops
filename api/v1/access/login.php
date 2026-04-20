@@ -25,4 +25,6 @@ if (count($rows) == 0) {
     $payload["login_status"] = "Not valid credentials";
 } else {
     $payload["login_status"] = "Successful";
+    $_SESSION["logged"] = true; //sessione
+    include __DIR__ . "/../checks/check_session";
 }
