@@ -35,10 +35,16 @@ function decode_jwt($token, $secret) {
     ];
 }
 
+
 $_SERVER["token"] = getallheaders()["token"];
 
-if(!isset($_SERVER["token"]))
+if(!isset($_SERVER["token"])){
     $_SERVER["token"] = "";
+    $payload["status"] = "498 Invalid Token";
+    header("HTTP/1.1 498 Invalid Token");
+    echo json_encode($payload);
+    exit();
+}
 
 $secret = "ILOVEBARCELONAPLSIWANTTOGETBACK";
 $token_decoded = decode_jwt($_SERVER["token"], $secret);
