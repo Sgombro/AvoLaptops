@@ -1,7 +1,7 @@
 <?php
 include __DIR__ . "/../../checks/check_token.php";
 
-$query = "SELECT r.id_reservation, r.date, r.time_start, r.time_end, r.status, u.*, laptops.id_laptop, laptops.status, m.*, l.* from reservations r
+$query = "SELECT r.id_reservation, r.date, r.time_start, r.time_end, r.status, u.id_user, u.name, u.surname, u.email, u.password, u.role, laptops.id_laptop, laptops.status, m.*, l.* from reservations r
 INNER JOIN laptops ON laptops.id_laptop = r.id_laptop
 INNER JOIN models m ON laptops.id_model = m.id_model 
 INNER JOIN lockers l ON laptops.id_locker = l.id_locker
@@ -52,7 +52,7 @@ unset($result);
 if($params_count)
     $params = " WHERE " . $params;
 
-$query = "SELECT r.id_reservation, r.date, r.time_start, r.time_end, r.status, u.*, laptops.id_laptop, laptops.status, m.*, l.* from reservations r
+$query = "SELECT r.id_reservation, r.date, r.time_start, r.time_end, r.status, u.id_user, u.name, u.surname, u.email, u.password, u.role, laptops.id_laptop, laptops.status, m.*, l.* from reservations r
 INNER JOIN laptops ON laptops.id_laptop = r.id_laptop
 INNER JOIN models m ON laptops.id_model = m.id_model 
 INNER JOIN lockers l ON laptops.id_locker = l.id_locker

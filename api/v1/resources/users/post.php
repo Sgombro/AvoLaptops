@@ -58,10 +58,10 @@ try{
             $mail->Host = 'smtp.gmail.com';
             $mail->Username = 'example@gmail.com';
             $mail->SMTPAuth = true;  
-            $mail->Password = 'example123';
+            $mail->Password = 'sigma';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; //Enable implicit TLS encryption
             $mail->Port = 587;
-            $mail->setFrom('example@gmail.com', 'CODICE OTP');
+            $mail->setFrom('sigma@gmail.com', 'CODICE OTP');
             $mail->addAddress($_POST['email']); 
             $mail->isHTML(true);
             $mail->Subject = 'Verifica la mail';
