@@ -32,6 +32,16 @@ $result = mysqli_stmt_get_result($stmt);
 $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
 
+foreach($rows as $row){
+    if(!$row['verified']){
+        $payload["status"] = "401 Unauthorized";
+        header("HTTP/1.1 401 Unauthorized");
+        $payload["message"] = "Verify your email first. Try again in 5 minutes";
+        echo json_encode($payload);
+        exit();
+    }
+}
+
 if (count($rows) == 0) {
     $payload["status"] = "401 Unauthorized";
     header("HTTP/1.1 401 Unauthorized");
@@ -48,7 +58,9 @@ if (count($rows) == 0) {
         "surname" => "",
         "email" => "",
         "password" => "",
-        "admin" => false
+        "verified" => 0,
+        "admin" => false,
+        "start" => time()
     ];
     $jwt["signature"] = "";
 
@@ -60,6 +72,7 @@ if (count($rows) == 0) {
         $jwt["payload"]["surname"] = $row["surname"];
         $jwt["payload"]["email"] = $row["email"];
         $jwt["payload"]["password"] = $row["password"];
+        $jwt["payload"]["verified"] = $row["verified"];
         if($row["role"] == "admin"){
             $jwt["payload"]["admin"] = true;
         }
@@ -74,4 +87,5 @@ if (count($rows) == 0) {
 
     $payload["login_status"] = "Successful";
     $payload["token"] = $jwt_token;
+
 }

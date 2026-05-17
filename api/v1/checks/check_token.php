@@ -8,7 +8,7 @@ function base64url_decode($data) {
     return base64_decode(strtr($data, '-_', '+/') . str_repeat('=', 3 - (3 + strlen($data)) % 4));
 }
 
-function decode_jwt($token, $secret) {
+function decode_jwt($token, $secret, $called_resource) {
     $parts = explode('.', $token);
     
     if (count($parts) !== 3) {
@@ -28,6 +28,20 @@ function decode_jwt($token, $secret) {
 
     $valid = hash_equals($expected_signature, $signature);
 
+    if($payload['start'] + 86400 <= time() and $called_resource != "otp"){
+        $valid = false;
+    }
+    else if($called_resource == "otp" and $payload['start'] + 300 <= time()){
+        $valid = false;
+    }
+
+    if(!$payload['verified'] and $called_resource != "otp"){
+        $payload["status"] = "401 Unauthorized";
+        header("HTTP/1.1 401 Unauthorized");
+        $payload["message"] = "Verify your email first.";
+        $valid = false;
+    }
+
     return [
         "header"    => $header,
         "payload"   => $payload,
@@ -35,20 +49,17 @@ function decode_jwt($token, $secret) {
     ];
 }
 
-
-$_SERVER["token"] = getallheaders()["token"];
-
-if(!isset($_SERVER["token"])){
-    $_SERVER["token"] = "";
+if(!isset(getallheaders()["token"])){
     $payload["status"] = "498 Invalid Token";
     header("HTTP/1.1 498 Invalid Token");
     echo json_encode($payload);
     exit();
 }
 
-$secret = "ILOVEBARCELONAPLSIWANTTOGETBACK";
-$token_decoded = decode_jwt($_SERVER["token"], $secret);
+$_SERVER["token"] = getallheaders()["token"];
 
+$secret = "ILOVEBARCELONAPLSIWANTTOGETBACK";
+$token_decoded = decode_jwt($_SERVER["token"], $secret, $called_resource);
 
 if (!$token_decoded["valid"]) {
     $payload["status"] = "498 Invalid Token";

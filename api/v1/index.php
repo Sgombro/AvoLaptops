@@ -1,5 +1,4 @@
 <?php
-
 //connessione database
 include __DIR__ . "/connections/connection.php";
 
@@ -79,7 +78,7 @@ switch ($_SERVER["REQUEST_METHOD"]) {
                 include __DIR__ . "/access/login.php";
                 break;
             case 'users':
-                include __DIR__ . "/access/signin.php";
+                include __DIR__ . "/resources/users/post.php";
                 break;
             case 'laptops':
                 include __DIR__ . "/resources/laptops/post.php";
@@ -91,11 +90,38 @@ switch ($_SERVER["REQUEST_METHOD"]) {
                 include __DIR__ . "/resources/lockers/post.php";
                 break;
             case 'models':
-                include __DIR__ . "/models/lockers/post.php";
+                include __DIR__ . "/resources/lockers/post.php";
+                break;
+            case 'otp':
+                include __DIR__ . "/resources/otp.php";
                 break;
 
             default:
                 if($called_resource == 'homepage'){
+                    $payload["status"] = "405 Method Not Allowed";
+                    header("HTTP/1.1 405 Method Not Allowed");
+                }
+                else{
+                    $payload["status"] = "404 Not Found";
+                    header("HTTP/1.1 404 Not Found");
+                }
+                break;
+        }
+        break;
+    
+    case 'PATCH':
+        parse_str(file_get_contents('php://input'), $_PATCH);
+        switch ($called_resource) {
+            case 'users':
+                include __DIR__ . "/resources/users/patch.php";
+                break;
+            default:
+                if($called_resource == 'homepage'
+                or $called_resource == 'login'
+                or $called_resource == 'models'
+                or $called_resource == 'laptops'
+                or $called_resource == 'lockers'
+                or $called_resource == 'reservations'){
                     $payload["status"] = "405 Method Not Allowed";
                     header("HTTP/1.1 405 Method Not Allowed");
                 }

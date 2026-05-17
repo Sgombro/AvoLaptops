@@ -1,6 +1,8 @@
 <?php
 include __DIR__ . "/../../checks/check_token.php";
 
+
+
 // ── Validazione data ──────────────────────────────────────────────────────────
 $today = date('Y-m-d');
 if (!isset($_POST["date"]) || $_POST["date"] < $today) {
