@@ -32,7 +32,7 @@ if(strlen($_POST["password"]) < 8){
     $payload["status"] = "401 Unauthorized";
     header("HTTP/1.1 401 Unauthorized");
     $payload["message"] = "Password must be 8 digit long";
-    echo $payload;
+    json_encode($payload)
     exit();
 }
 
