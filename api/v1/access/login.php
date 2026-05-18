@@ -8,7 +8,7 @@ function base64url_encode($data) {
 if(!isset($_POST['email'], $_POST["password"])){
     $payload["status"] = "401 Unauthorized";
     header("HTTP/1.1 401 Unauthorized");
-    $payload["login_status"] = "Not valid credentials";
+    $payload["message"] = "Not valid credentials";
     echo json_encode($payload);
     exit();
 }
@@ -45,7 +45,7 @@ foreach($rows as $row){
 if (count($rows) == 0) {
     $payload["status"] = "401 Unauthorized";
     header("HTTP/1.1 401 Unauthorized");
-    $payload["login_status"] = "Not valid credentials";
+    $payload["message"] = "Not valid credentials";
 } else {
     $jwt = [];
     $jwt["header"] = [
@@ -85,7 +85,7 @@ if (count($rows) == 0) {
     $jwt_token = base64url_encode(json_encode($jwt['header'])) . "." .
     base64url_encode(json_encode($jwt['payload'])) . "." . $jwt["signature"];
 
-    $payload["login_status"] = "Successful";
+    $payload["message"] = "Successful";
     $payload["token"] = $jwt_token;
 
 }
