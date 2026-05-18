@@ -28,6 +28,14 @@ $surname = $_POST['surname'];
 //credenziali
 $email = $_POST['email'];
 
+if(strlen($_POST["password"]) < 8){
+    $payload["status"] = "401 Unauthorized";
+    header("HTTP/1.1 401 Unauthorized");
+    $payload["message"] = "Password must be 8 digit long";
+    echo $payload;
+    exit();
+}
+
 $pass = hash("sha256", $_POST["password"]);
 
 $domain = explode("@", $email);
