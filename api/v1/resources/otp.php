@@ -22,7 +22,8 @@ foreach($rows as $row){
     if($row['otp_time'] == "null" or $row['otp'] != $otp_code){
         $payload["status"] = "406 Not Acceptable";
         header("HTTP/1.1 406 Not Acceptable");
-        $payload["message"] = "OTP not valid";   
+        $payload["message"] = "OTP not valid"; 
+        echo json_encode($payload);
         exit();
     }
     else if($row['otp'] == $otp_code){
