@@ -17,7 +17,7 @@ function base64url_encode($data) {
 if (!isset($_POST['email'], $_POST["password"], $_POST["name"], $_POST["surname"])) {
     $payload["status"] = "401 Unauthorized";
     header("HTTP/1.1 401 Unauthorized");
-    $payload["message"] = "Not valid credentials";
+    $payload["message"] = "Credenziali non valide";
     echo json_encode($payload);
     exit();
 }
@@ -29,12 +29,12 @@ $surname = $_POST['surname'];
 $email = $_POST['email'];
 
 if(strlen($_POST["password"]) < 8){
-    $payload["status"] = "401 Unauthorized";
-    header("HTTP/1.1 401 Unauthorized");
-    $payload["message"] = "Password must be 8 digit long";
-    json_encode($payload)
-    exit();
-}
+	$payload["status"] = "401 Unauthorized";
+        header("HTTP/1.1 401 Unauthorized");
+        $payload["message"] = "La password deve essere lunga 8 cifre";
+	echo json_encode($payload);
+	exit();
+} 
 
 $pass = hash("sha256", $_POST["password"]);
 
@@ -56,7 +56,7 @@ try{
 
         $payload["status"] = "201 Created";
 
-        $payload["message"] = "Verify the account with the sent OTP on your email.";
+        $payload["message"] = "Verifica l'account con il codice OTP inviato via mail";
         
         //invio mail
         try {
@@ -66,10 +66,10 @@ try{
             $mail->Host = 'smtp.gmail.com';
             $mail->Username = 'example@gmail.com';
             $mail->SMTPAuth = true;  
-            $mail->Password = 'sigma';
+            $mail->Password = 'example1234';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; //Enable implicit TLS encryption
             $mail->Port = 587;
-            $mail->setFrom('sigma@gmail.com', 'CODICE OTP');
+            $mail->setFrom('example@gmail.com', 'CODICE OTP');
             $mail->addAddress($_POST['email']); 
             $mail->isHTML(true);
             $mail->Subject = 'Verifica la mail';
@@ -92,7 +92,7 @@ try{
         if (count($rows) == 0) {
             $payload["status"] = "401 Unauthorized";
             header("HTTP/1.1 401 Unauthorized");
-            $payload["message"] = "Not valid credentials";
+            $payload["message"] = "Credenziali non valide";
         } else {
             $jwt = [];
             $jwt["header"] = [
@@ -139,19 +139,19 @@ try{
 
 
         } catch (Exception $e) {
-            $payload += ["message" => "SMTP Server Error"];
+            $payload += ["message" => "Email non inviata correttamente"];
         }  
     }
     else{
         $payload["status"] = "401 Unauthorized";
         header("HTTP/1.1 401 Unauthorized");
-        $payload["message"] = "Not valid email domain";   
+        $payload["message"] = "Solo account @itisavogadro si possono registrare";   
     }
 }
 catch (mysqli_sql_exception $e){
     $payload["status"] = "406 Not Acceptable";
     header("HTTP/1.1 406 Not Acceptable");
-    $payload["message"] = "User exists, if you didn't register wait 5 minutes";   
+    $payload["message"] = "Utente esistente, se non ti sei registrato te riprova tra 5 minuti";   
 }
 
 ?>

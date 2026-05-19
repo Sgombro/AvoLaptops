@@ -22,14 +22,14 @@ foreach($rows as $row){
     if($row['otp_time'] == "null" or $row['otp'] != $otp_code){
         $payload["status"] = "406 Not Acceptable";
         header("HTTP/1.1 406 Not Acceptable");
-        $payload["message"] = "OTP not valid"; 
-        echo json_encode($payload);
+        $payload["message"] = "Codice non valido";
+	echo json_encode($payload);   
         exit();
     }
     else if($row['otp'] == $otp_code){
         $payload["status"] = "200 OK";
         
-        $payload["message"] = "OTP verified successfully";   
+        $payload["message"] = "Account verificato con successo";   
 
         $query = "UPDATE users SET verified = 1 WHERE email = ?";
 

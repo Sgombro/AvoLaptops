@@ -149,12 +149,11 @@ switch ($_SERVER["REQUEST_METHOD"]) {
                 include __DIR__ . "/resources/lockers/delete.php";
                 break;
             case 'models':
-                include __DIR__ . "/models/lockers/delete.php";
+                include __DIR__ . "/resources/models/delete.php";
                 break;
             default:
                 if($called_resource == 'homepage'
-                or $called_resource == 'login'
-                or $called_resource == 'models'){
+                or $called_resource == 'login'){
                     $payload["status"] = "405 Method Not Allowed";
                     header("HTTP/1.1 405 Method Not Allowed");
                 }

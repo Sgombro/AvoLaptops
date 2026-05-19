@@ -8,7 +8,7 @@ function base64url_encode($data) {
 if(!isset($_POST['email'], $_POST["password"])){
     $payload["status"] = "401 Unauthorized";
     header("HTTP/1.1 401 Unauthorized");
-    $payload["message"] = "Not valid credentials";
+    $payload["message"] = "Credenziali non valide";
     echo json_encode($payload);
     exit();
 }
@@ -36,7 +36,7 @@ foreach($rows as $row){
     if(!$row['verified']){
         $payload["status"] = "401 Unauthorized";
         header("HTTP/1.1 401 Unauthorized");
-        $payload["message"] = "Verify your email first. Try again in 5 minutes";
+        $payload["message"] = "Verifica il tuo indirizzo mail prima, riprova tra 5 minuti";
         echo json_encode($payload);
         exit();
     }

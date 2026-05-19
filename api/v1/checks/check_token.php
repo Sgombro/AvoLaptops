@@ -38,7 +38,7 @@ function decode_jwt($token, $secret, $called_resource) {
     if(!$payload['verified'] and $called_resource != "otp"){
         $payload["status"] = "401 Unauthorized";
         header("HTTP/1.1 401 Unauthorized");
-        $payload["message"] = "Verify your email first.";
+        $payload["message"] = "Verifica prima la tua mail.";
         $valid = false;
     }
 
