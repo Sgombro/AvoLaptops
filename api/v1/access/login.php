@@ -45,7 +45,7 @@ foreach($rows as $row){
 if (count($rows) == 0) {
     $payload["status"] = "401 Unauthorized";
     header("HTTP/1.1 401 Unauthorized");
-    $payload["message"] = "Not valid credentials";
+    $payload["message"] = "Credenziali non valide";
 } else {
     $jwt = [];
     $jwt["header"] = [

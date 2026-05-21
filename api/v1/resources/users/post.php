@@ -64,12 +64,12 @@ try{
             $mail->isSMTP();
             $mail->SMTPDebug = SMTP::DEBUG_OFF;
             $mail->Host = 'smtp.gmail.com';
-            $mail->Username = 'example@gmail.com';
+            $mail->Username = 'sigma@gmail.com';
             $mail->SMTPAuth = true;  
-            $mail->Password = 'example1234';
+            $mail->Password = 'sigma111';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; //Enable implicit TLS encryption
             $mail->Port = 587;
-            $mail->setFrom('example@gmail.com', 'CODICE OTP');
+            $mail->setFrom('sgima@gmail.com', 'CODICE OTP');
             $mail->addAddress($_POST['email']); 
             $mail->isHTML(true);
             $mail->Subject = 'Verifica la mail';
@@ -145,7 +145,7 @@ try{
     else{
         $payload["status"] = "401 Unauthorized";
         header("HTTP/1.1 401 Unauthorized");
-        $payload["message"] = "Solo account @itisavogadro si possono registrare";   
+        $payload["message"] = "Solo account @gmail si possono registrare";   
     }
 }
 catch (mysqli_sql_exception $e){
