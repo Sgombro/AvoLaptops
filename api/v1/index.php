@@ -134,8 +134,8 @@ switch ($_SERVER["REQUEST_METHOD"]) {
         break;
 
     case 'DELETE':
-        parse_str(file_get_contents('php://input'), $_DELETE);
-        switch ($called_resource) {
+        $_DELETE['id'] = $uri_elements[1];
+        switch ($uri_elements[0]) {
             case 'laptops':
                 include __DIR__ . "/resources/laptops/delete.php";
                 break;

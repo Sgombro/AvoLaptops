@@ -2,7 +2,7 @@
 
 include __DIR__ . "/../../checks/check_token.php";
 
-$id = $_DELETE["id-reservation"];
+$id = $_DELETE["id"];
 
 $query = "SELECT id_user from reservations WHERE id_reservation = ?";
 

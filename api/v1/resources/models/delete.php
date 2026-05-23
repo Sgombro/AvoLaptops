@@ -2,7 +2,7 @@
 include __DIR__ . "/../../checks/check_token.php";
 include __DIR__ . "/../../checks/check_admin.php";
 
-$id = $_DELETE["id-model"];
+$id = $_DELETE["id"];
 
 $query = "DELETE from models WHERE id_model = ?";
 

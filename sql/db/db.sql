@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Creato il: Mag 17, 2026 alle 22:39
--- Versione del server: 10.4.32-MariaDB
--- Versione PHP: 8.2.12
+-- Creato il: Mag 23, 2026 alle 22:42
+-- Versione del server: 12.2.2-MariaDB
+-- Versione PHP: 8.5.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -34,6 +34,17 @@ CREATE TABLE `laptops` (
   `status` enum('available','unavailable') DEFAULT 'available'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+--
+-- Dump dei dati per la tabella `laptops`
+--
+
+INSERT INTO `laptops` (`id_laptop`, `id_model`, `id_locker`, `status`) VALUES
+(1, 1, 1, 'available'),
+(2, 1, 1, 'available'),
+(3, 2, 1, 'available'),
+(4, 1, 2, 'unavailable'),
+(5, 2, 2, 'unavailable');
+
 -- --------------------------------------------------------
 
 --
@@ -45,6 +56,15 @@ CREATE TABLE `lockers` (
   `name_locker` varchar(100) NOT NULL,
   `location` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dump dei dati per la tabella `lockers`
+--
+
+INSERT INTO `lockers` (`id_locker`, `name_locker`, `location`) VALUES
+(1, 'Armadietto A', 'Laboratorio informatica - Piano 1'),
+(2, 'Armadietto B', 'Biblioteca - Piano 2'),
+(3, 'Armadietto C', 'Aula docenti - Piano 3');
 
 -- --------------------------------------------------------
 
@@ -62,6 +82,15 @@ CREATE TABLE `models` (
   `os` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+--
+-- Dump dei dati per la tabella `models`
+--
+
+INSERT INTO `models` (`id_model`, `brand`, `model`, `cpu`, `ram`, `storage`, `os`) VALUES
+(1, 'Lenovo', 'ThinkPad E15', 'Intel Core i5-1235U', 16, 512, 'Windows 11 Pro'),
+(2, 'HP', 'ProBook 450 G9', 'Intel Core i5-1235U', 8, 256, 'Windows 11 Pro'),
+(3, 'Dell', 'Latitude 5530', 'Intel Core i7-1255U', 16, 512, 'Windows 11 Pro');
+
 -- --------------------------------------------------------
 
 --
@@ -77,6 +106,18 @@ CREATE TABLE `reservations` (
   `time_end` time NOT NULL,
   `status` enum('active','completed') DEFAULT 'active'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dump dei dati per la tabella `reservations`
+--
+
+INSERT INTO `reservations` (`id_reservation`, `id_user`, `id_laptop`, `date`, `time_start`, `time_end`, `status`) VALUES
+(1, 1, 1, '3000-05-24', '10:40:00', '22:25:00', 'active'),
+(1, 1, 2, '2026-05-24', '10:40:00', '22:25:00', 'active'),
+(1, 1, 3, '2026-05-24', '10:40:00', '22:25:00', 'active'),
+(2, 1, 4, '2026-05-24', '10:40:00', '22:25:00', 'active'),
+(3, 56, 4, '2026-05-23', '22:34:00', '23:34:00', 'active'),
+(3, 56, 5, '2026-05-23', '22:34:00', '23:34:00', 'active');
 
 -- --------------------------------------------------------
 
@@ -101,7 +142,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id_user`, `name`, `surname`, `email`, `password`, `role`, `verified`, `otp`, `otp_time`) VALUES
-(1, 'Admin', 'Sistema', 'admin@itisavogadro.it', '0a1dfd09d798d16a95907f130c00ef6bebb7379682fb0890147fbd8ae243b7cb', 'admin', 1, NULL, NULL);
+(1, 'Admin', 'Sistema', 'admin@itisavogadro.it', '0a1dfd09d798d16a95907f130c00ef6bebb7379682fb0890147fbd8ae243b7cb', 'admin', 1, NULL, NULL),
+(56, 'Adam', 'Ramli', 'ramliadam2007@gmail.com', '0a1dfd09d798d16a95907f130c00ef6bebb7379682fb0890147fbd8ae243b7cb', 'teacher', 1, 140159, '2026-05-20 19:43:34'),
+(94, 'ricardo', 'valbuena', 'orazioilpazzo5@gmail.com', 'e966a70e4eb238382ad51fd2a5d974a3cd400d93094ad35efc249e35cac17036', 'teacher', 1, 970291, '2026-05-23 20:40:51');
 
 --
 -- Indici per le tabelle scaricate
@@ -168,7 +211,7 @@ ALTER TABLE `models`
 -- AUTO_INCREMENT per la tabella `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
 
 --
 -- Limiti per le tabelle scaricate
@@ -192,12 +235,12 @@ DELIMITER $$
 --
 -- Eventi
 --
-CREATE DEFINER=`root`@`localhost` EVENT `ev_complete_reservations` ON SCHEDULE EVERY 1 MINUTE STARTS '2026-04-26 19:14:39' ON COMPLETION NOT PRESERVE ENABLE DO UPDATE reservations
+CREATE DEFINER=`root`@`localhost` EVENT `ev_complete_reservations` ON SCHEDULE EVERY 1 MINUTE STARTS '2026-05-23 21:55:24' ON COMPLETION PRESERVE ENABLE DO UPDATE reservations
     SET status = 'completed'
     WHERE status = 'active'
     AND (date < CURDATE() OR (date = CURDATE() AND time_end <= CURTIME()))$$
 
-CREATE DEFINER=`root`@`localhost` EVENT `ev_laptop_available` ON SCHEDULE EVERY 1 MINUTE STARTS '2026-04-26 19:14:49' ON COMPLETION NOT PRESERVE ENABLE DO UPDATE laptops l
+CREATE DEFINER=`root`@`localhost` EVENT `ev_laptop_available` ON SCHEDULE EVERY 1 MINUTE STARTS '2026-05-23 21:55:24' ON COMPLETION PRESERVE ENABLE DO UPDATE laptops l
     SET l.status = 'available'
     WHERE l.status = 'unavailable'
     AND NOT EXISTS (
@@ -209,7 +252,7 @@ CREATE DEFINER=`root`@`localhost` EVENT `ev_laptop_available` ON SCHEDULE EVERY 
         AND r.time_end > CURTIME()
     )$$
 
-CREATE DEFINER=`root`@`localhost` EVENT `ev_laptop_unavailable` ON SCHEDULE EVERY 1 MINUTE STARTS '2026-04-26 19:14:58' ON COMPLETION NOT PRESERVE ENABLE DO UPDATE laptops l
+CREATE DEFINER=`root`@`localhost` EVENT `ev_laptop_unavailable` ON SCHEDULE EVERY 1 MINUTE STARTS '2026-05-23 21:55:24' ON COMPLETION PRESERVE ENABLE DO UPDATE laptops l
     SET l.status = 'unavailable'
     WHERE l.status = 'available'
     AND EXISTS (
@@ -221,9 +264,9 @@ CREATE DEFINER=`root`@`localhost` EVENT `ev_laptop_unavailable` ON SCHEDULE EVER
         AND r.time_end > CURTIME()
     )$$
 
-CREATE DEFINER=`root`@`localhost` EVENT `ev_control_otp` ON SCHEDULE EVERY 1 MINUTE STARTS '2026-05-17 20:06:26' ON COMPLETION NOT PRESERVE ENABLE DO DELETE FROM users
-WHERE otp_time IS NOT NULL AND verified = 0
-    AND otp_time < NOW() - INTERVAL 5 MINUTE$$
+CREATE DEFINER=`root`@`localhost` EVENT `ev_control_otp` ON SCHEDULE EVERY 1 MINUTE STARTS '2026-05-23 21:55:24' ON COMPLETION PRESERVE ENABLE DO DELETE FROM users
+    WHERE otp_time IS NOT NULL AND verified = 0
+    AND otp_time < NOW() - INTERVAL 1 MINUTE$$
 
 DELIMITER ;
 COMMIT;

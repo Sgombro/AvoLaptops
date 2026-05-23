@@ -57,26 +57,27 @@ try{
         $payload["status"] = "201 Created";
 
         $payload["message"] = "Verifica l'account con il codice OTP inviato via mail";
-        
+
+
         //invio mail
         try {
             $mail = new PHPMailer(true);
             $mail->isSMTP();
             $mail->SMTPDebug = SMTP::DEBUG_OFF;
             $mail->Host = 'smtp.gmail.com';
-            $mail->Username = 'sigma@gmail.com';
+            $mail->Username = 'example@gmail.com';
             $mail->SMTPAuth = true;  
-            $mail->Password = 'sigma111';
+            $mail->Password = 'example123';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; //Enable implicit TLS encryption
             $mail->Port = 587;
-            $mail->setFrom('sgima@gmail.com', 'CODICE OTP');
+            $mail->setFrom('example@gmail.com', 'CODICE OTP');
             $mail->addAddress($_POST['email']); 
             $mail->isHTML(true);
             $mail->Subject = 'Verifica la mail';
             $mail->Body = 'Il codice OTP per la verifica della mail è: ' . $otp_code;
             $mail->send();
 
-        //invio token non verificato
+                       //invio token non verificato
         $query = "SELECT * from users WHERE email = ? AND password = ?";
 
         $stmt = mysqli_prepare($conn, $query);
@@ -132,15 +133,12 @@ try{
             $jwt_token = base64url_encode(json_encode($jwt['header'])) . "." .
             base64url_encode(json_encode($jwt['payload'])) . "." . $jwt["signature"];
 
-            $payload["message"] = "Successful";
             $payload["token"] = $jwt_token;
 
         }
-
-
         } catch (Exception $e) {
             $payload += ["message" => "Email non inviata correttamente"];
-        }  
+        } 
     }
     else{
         $payload["status"] = "401 Unauthorized";

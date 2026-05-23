@@ -3,7 +3,7 @@
 include __DIR__ . "/../../checks/check_token.php";
 include __DIR__ . "/../../checks/check_admin.php";
 
-$id = $_DELETE["id-laptop"];
+$id = $_DELETE["id"];
 
 $query = "DELETE from laptops WHERE id_laptop = ?";
 
