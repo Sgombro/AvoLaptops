@@ -23,7 +23,6 @@ Authorization: Bearer <jwt_token>
 
 **Struttura JWT:**
 - **Algorithm**: HS256
-- **Secret**: ILOVEBARCELONAPLSIWANTTOGETBACK
 
 **Payload JWT contiene:**
 ```json
