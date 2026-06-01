@@ -4,7 +4,7 @@
 
 AvoLaptops è un'API REST che gestisce un sistema di prenotazione e gestione di laptop. L'API fornisce endpoints per l'autenticazione, la gestione degli utenti, dei laptop, delle prenotazioni e degli armadietti di stoccaggio.
 
-**Base URL**: `/api/v1/`
+**Base URL**: `https://gianella.site/AvoLaptops/api/v1/`
 
 **Formato risposta**: JSON
 
