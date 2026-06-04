@@ -35,7 +35,7 @@ foreach($row as $attribute => $value){
 if($params_count)
     $params = " WHERE " . $params;
 
-$query = "SELECT * from models";
+$query = "SELECT * from models ORDER BY id_model";
 
 $query .= $params;
 

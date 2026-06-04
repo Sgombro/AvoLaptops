@@ -1,38 +1,9 @@
-// config.js - Configurazione centrale
-// Cambia qui l'URL quando l'API sarà pronta
-
-const API_URL = 'http://localhost:3000/api';
-
-// Funzione per ottenere header con token
-function getHeaders() {
-    const headers = { 'Content-Type': 'application/json' };
-    const token = localStorage.getItem('token');
-    if (token) {
-        headers['Authorization'] = 'Bearer ' + token;
-    }
-    return headers;
-}
-
-// Funzione per ottenere parametro dalla URL
-function getUrlParam(name) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(name);
-}
-
-// Verifica se utente è loggato
-function isLoggedIn() {
-    return !!localStorage.getItem('token');
-}
-
-// Verifica se utente è admin
-function isAdmin() {
-    const utente = JSON.parse(localStorage.getItem('utente') || '{}');
-    return utente.role === 'admin';
-}
-
-// Logout
-function logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('utente');
-    window.location.href = 'login.html';
-}
+const API_BASE = 'https://gianella.site/AvoLaptops/api/v1/';
+const API_ENDPOINTS = {
+    login:        API_BASE + 'access/login.php',
+    laptops:      API_BASE + 'laptops',
+    reservations: API_BASE + 'reservations',
+    lockers:      API_BASE + 'lockers',
+    models:       API_BASE + 'models',
+    users:        API_BASE + 'users'
+};

@@ -90,7 +90,7 @@ switch ($_SERVER["REQUEST_METHOD"]) {
                 include __DIR__ . "/resources/lockers/post.php";
                 break;
             case 'models':
-                include __DIR__ . "/resources/lockers/post.php";
+                include __DIR__ . "/resources/models/post.php";
                 break;
             case 'otp':
                 include __DIR__ . "/resources/otp.php";
@@ -111,21 +111,25 @@ switch ($_SERVER["REQUEST_METHOD"]) {
     
     case 'PATCH':
         parse_str(file_get_contents('php://input'), $_PATCH);
-        switch ($called_resource) {
+        $_PATCH_ID = (isset($uri_elements[1]) && is_numeric($uri_elements[1])) ? (int)$uri_elements[1] : null;
+        switch ($uri_elements[0]) {
             case 'users':
                 include __DIR__ . "/resources/users/patch.php";
                 break;
+            case 'laptops':
+                include __DIR__ . "/resources/laptops/patch.php";
+                break;
+            case 'lockers':
+                include __DIR__ . "/resources/lockers/patch.php";
+                break;
+            case 'models':
+                include __DIR__ . "/resources/models/patch.php";
+                break;
             default:
-                if($called_resource == 'homepage'
-                or $called_resource == 'login'
-                or $called_resource == 'models'
-                or $called_resource == 'laptops'
-                or $called_resource == 'lockers'
-                or $called_resource == 'reservations'){
+                if(in_array($uri_elements[0], ['homepage','login','reservations'])){
                     $payload["status"] = "405 Method Not Allowed";
                     header("HTTP/1.1 405 Method Not Allowed");
-                }
-                else{
+                } else {
                     $payload["status"] = "404 Not Found";
                     header("HTTP/1.1 404 Not Found");
                 }

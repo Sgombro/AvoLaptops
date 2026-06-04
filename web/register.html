@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrazione - AvoLaptops</title>
+    <link rel="stylesheet" href="css/theme.css?v=7">
+</head>
+<body>
+
+<div id="loginContainer">
+    <div class="login-card">
+        <div class="login-logo">
+            <span class="login-avo">AVO</span><span class="login-laptops">Laptops</span>
+        </div>
+        <p class="subtitle">Crea un nuovo account per accedere alla piattaforma</p>
+
+        <form id="registerForm" action="#" method="post">
+            <p><label>Nome<br><input type="text" id="regName" name="name" required placeholder="Mario"></label></p>
+            <p><label>Cognome<br><input type="text" id="regSurname" name="surname" required placeholder="Rossi"></label></p>
+            <p><label>Email<br><input type="email" id="regEmail" name="email" required placeholder="nome.cognome@itisavogadro.it"></label></p>
+            <p><label>Password<br><input type="password" id="regPassword" name="password" required minlength="8" placeholder="Almeno 8 caratteri"></label></p>
+            <p><label>Conferma password<br><input type="password" id="regPasswordConfirm" name="password-confirm" required minlength="8" placeholder="Ripeti la password"></label></p>
+            <button type="button" class="primary">Registrati</button>
+        </form>
+
+        <p class="login-footer"><a href="index.html">Torna al login</a></p>
+    </div>
+</div>
+
+</body>
+</html>

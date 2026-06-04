@@ -1,7 +1,12 @@
 <?php
 include __DIR__ . "/../../checks/check_token.php";
 
-$query = "SELECT r.id_reservation, r.date, r.time_start, r.time_end, r.status, u.id_user, u.name, u.surname, u.email, u.password, u.role, laptops.id_laptop, laptops.status, m.*, l.* from reservations r
+$query = "SELECT r.id_reservation, r.date, r.time_start, r.time_end, r.status,
+       u.id_user, u.name, u.surname, u.email, u.password, u.role,
+       laptops.id_laptop, laptops.status AS laptop_status,
+       m.id_model, m.brand, m.model, m.cpu, m.ram, m.storage, m.os,
+       l.id_locker, l.name_locker, l.location
+       FROM reservations r
 INNER JOIN laptops ON laptops.id_laptop = r.id_laptop
 INNER JOIN models m ON laptops.id_model = m.id_model 
 INNER JOIN lockers l ON laptops.id_locker = l.id_locker
@@ -52,7 +57,12 @@ unset($result);
 if($params_count)
     $params = " WHERE " . $params;
 
-$query = "SELECT r.id_reservation, r.date, r.time_start, r.time_end, r.status, u.id_user, u.name, u.surname, u.email, u.password, u.role, laptops.id_laptop, laptops.status, m.*, l.* from reservations r
+$query = "SELECT r.id_reservation, r.date, r.time_start, r.time_end, r.status,
+       u.id_user, u.name, u.surname, u.email, u.password, u.role,
+       laptops.id_laptop, laptops.status AS laptop_status,
+       m.id_model, m.brand, m.model, m.cpu, m.ram, m.storage, m.os,
+       l.id_locker, l.name_locker, l.location
+       FROM reservations r
 INNER JOIN laptops ON laptops.id_laptop = r.id_laptop
 INNER JOIN models m ON laptops.id_model = m.id_model 
 INNER JOIN lockers l ON laptops.id_locker = l.id_locker
@@ -100,11 +110,11 @@ $payload["reservations"] = [];
             if($counter >= 11 and $counter <= 12){
                     $laptop += [$attribute => $element];
                 }    
-                else if($counter >= 13 and $counter <= 18){
+                else if($counter >= 13 and $counter <= 19){
                         $laptop["model"] += [$attribute => $element];
                     }
 
-                else if($counter >= 19 and $counter <= 21){
+                else if($counter >= 20 and $counter <= 22){
                     $laptop["locker"] += [$attribute => $element];
                 }
                 else if($counter >= 5 and $counter <= 10){

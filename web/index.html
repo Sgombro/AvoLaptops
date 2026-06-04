@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AvoLaptops — IIS Avogadro Torino</title>
+    <link rel="stylesheet" href="css/theme.css?v=7">
+</head>
+<body>
+
+<div id="loginContainer">
+    <div class="login-card">
+        <div class="login-logo">
+            <span class="login-avo">AVO</span><span class="login-laptops">Laptops</span>
+        </div>
+        <p class="subtitle">IIS Amedeo Avogadro &mdash; Torino<br>Prenotazione portatili e locker</p>
+        <div id="loginMessage" style="display:none"></div>
+        <form id="loginForm">
+            <p><label>Email istituzionale<br><input type="email" id="email" required placeholder="nome.cognome@itisavogadro.it"></label></p>
+            <p><label>Password<br><input type="password" id="password" required></label></p>
+            <button type="submit" class="primary">Accedi</button>
+        </form>
+        <p class="login-footer"><a href="register.html">Registrazione</a></p>
+    </div>
+</div>
+
+<div id="dashboardContainer" style="display:none">
+    <div id="appHeader">
+        <div class="header-brand">
+            <span class="login-avo">AVO</span><span class="login-laptops">Laptops</span>
+            <span class="header-school">IIS Amedeo Avogadro</span>
+        </div>
+        <span class="spacer"></span>
+        <span class="user-info"><strong id="userName"></strong></span>
+        <button id="themeToggleBtn">Tema chiaro</button>
+        <button id="logoutBtn">Esci</button>
+    </div>
+    <div id="mainContent">
+    <div id="dashboardMessage" style="display:none"></div>
+
+    <nav>
+        <button class="tab" data-tab="dashboard">Dashboard</button>
+        <button class="tab" data-tab="laptops">Portatili</button>
+        <button class="tab" data-tab="reservations">Prenotazioni</button>
+        <button class="tab" data-tab="lockers">Locker</button>
+        <button class="tab" data-tab="models">Modelli</button>
+        <button class="tab" data-tab="users" id="adminTabBtn" style="display:none">Admin</button>
+    </nav>
+
+    <!-- Dashboard -->
+    <div id="tab-dashboard" class="tab-content">
+        <h2 style="margin-bottom:18px">Azioni rapide</h2>
+        <div class="quick-actions">
+            <button class="quick-action-card primary-card" onclick="goNewReservation()">
+                <span class="qa-label">Azione principale</span>
+                <span class="qa-title">+ Nuova prenotazione</span>
+                <span class="qa-desc">Scegli un portatile disponibile e prenota</span>
+            </button>
+            <button class="quick-action-card" onclick="switchTab('reservations')">
+                <span class="qa-label">Le mie</span>
+                <span class="qa-title">Prenotazioni attive</span>
+                <span class="qa-desc">Controlla le tue prenotazioni correnti</span>
+            </button>
+            <button class="quick-action-card" onclick="switchTab('reservations', 'current')">
+                <span class="qa-label">Ora</span>
+                <span class="qa-title">In corso</span>
+                <span class="qa-desc">Tutti i portatili attualmente in uso</span>
+            </button>
+        </div>
+        <div class="dashboard-info">
+            <div class="info-card">
+                <strong>Istituto</strong>
+                <span>IIS Amedeo Avogadro &mdash; C.so San Maurizio 8, Torino</span>
+            </div>
+            <div class="info-card">
+                <strong>Supporto tecnico</strong>
+                <span>&mdash;</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portatili -->
+    <div id="tab-laptops" class="tab-content" style="display:none">
+        <h2>Portatili</h2>
+        <fieldset>
+            <legend>Filtri</legend>
+            Marca: <input type="text" id="filterLaptopBrand">
+            &nbsp; CPU: <input type="text" id="filterLaptopCpu">
+            &nbsp; RAM (GB): <input type="number" id="filterLaptopRam" style="width:60px">
+            &nbsp; Stato: <select id="filterLaptopStatus">
+                <option value="">Tutti</option>
+                <option value="available">Disponibile</option>
+                <option value="unavailable">Non disponibile</option>
+            </select>
+            &nbsp; <button id="searchLaptopsBtn">Cerca</button>
+            <button id="resetLaptopsBtn">Azzera</button>
+        </fieldset>
+        <div id="laptopsData"></div>
+    </div>
+
+    <!-- Prenotazioni -->
+    <div id="tab-reservations" class="tab-content" style="display:none">
+        <h2>Prenotazioni</h2>
+        <div class="sub-nav">
+            <button class="res-nav" data-res="my">Le mie attive</button>
+            <button class="res-nav" data-res="old">Storico</button>
+            <button class="res-nav" data-res="current">In corso</button>
+            <button class="res-nav" data-res="new">Nuova prenotazione</button>
+        </div>
+
+        <!-- Le mie prenotazioni -->
+        <div id="res-my">
+            <h3>Le mie prenotazioni attive</h3>
+            <fieldset>
+                <legend>Gestione</legend>
+                Le prenotazioni non ancora concluse possono essere annullate.
+                &nbsp; <button id="searchMyResBtn">Aggiorna</button>
+            </fieldset>
+            <div id="myReservationsData"></div>
+        </div>
+
+        <!-- In corso: tutte le prenotazioni attive + scadute di recente -->
+        <div id="res-current" style="display:none">
+            <h3>Prenotazioni in corso</h3>
+            <p id="resCurrentNote"></p>
+            <div id="currentReservationsData"></div>
+        </div>
+
+        <!-- Vecchie prenotazioni -->
+        <div id="res-old" style="display:none">
+            <h3>Vecchie prenotazioni</h3>
+            <fieldset>
+                <legend>Storico</legend>
+                Le prenotazioni concluse restano visibili qui e non possono essere annullate.
+                &nbsp; <button id="searchOldResBtn">Aggiorna</button>
+            </fieldset>
+            <div id="oldReservationsData"></div>
+        </div>
+
+        <!-- Nuova prenotazione -->
+        <div id="res-new" style="display:none">
+            <h3>Nuova prenotazione</h3>
+            <div id="newResMessage" style="display:none"></div>
+            <fieldset>
+                <legend>Data e orario</legend>
+                <p>
+                    <label>Data <input type="date" id="newResDate"></label>
+                    &nbsp;
+                    <button type="button" id="todayBtn">Oggi</button>
+                    <button type="button" id="tomorrowBtn">Domani</button>
+                </p>
+                <p>
+                    Inizio:
+                    <select id="newResStartH"><option value="08" selected>08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option></select>
+                    : <select id="newResStartM"><option value="00" selected>00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option></select>
+                    &nbsp;&nbsp;
+                    Fine:
+                    <select id="newResEndH"><option value="08">08</option><option value="09" selected>09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option></select>
+                    : <select id="newResEndM"><option value="00" selected>00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option></select>
+                </p>
+                <p>
+                    Slot rapidi:
+                    <span id="quickSlots" style="margin-left:4px"></span>
+                </p>
+                <p><button id="searchAvailableLaptopsBtn">Cerca laptop disponibili</button></p>
+            </fieldset>
+
+            <fieldset id="recurringFieldset">
+                <legend><label><input type="checkbox" id="recurringToggle"> Prenotazione ricorrente</label></legend>
+                <div id="recurringOptions" style="display:none">
+                    <p>
+                        Ripeti ogni:
+                        &nbsp;<label><input type="checkbox" class="dow" value="1"> Lu</label>
+                        <label><input type="checkbox" class="dow" value="2"> Ma</label>
+                        <label><input type="checkbox" class="dow" value="3"> Me</label>
+                        <label><input type="checkbox" class="dow" value="4"> Gi</label>
+                        <label><input type="checkbox" class="dow" value="5"> Ve</label>
+                        <label><input type="checkbox" class="dow" value="6"> Sa</label>
+                        <label><input type="checkbox" class="dow" value="0"> Do</label>
+                    </p>
+                    <p><label>Fino al <input type="date" id="recurringEndDate"></label></p>
+                </div>
+            </fieldset>
+            <div id="availableLaptopsSection" style="display:none">
+                <fieldset>
+                    <legend>Seleziona laptop da prenotare</legend>
+                    <div id="availableLaptopsList"></div>
+                    <br>
+                    <button id="confirmReservationBtn" class="primary">Prenota selezionati</button>
+                </fieldset>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Locker -->
+    <div id="tab-lockers" class="tab-content" style="display:none">
+        <h2>Locker</h2>
+        <div id="lockersData"></div>
+    </div>
+
+    <!-- Modelli -->
+    <div id="tab-models" class="tab-content" style="display:none">
+        <h2>Modelli</h2>
+        <div id="modelsData"></div>
+    </div>
+
+    <!-- Admin -->
+    <div id="tab-users" class="tab-content" style="display:none">
+        <h2>Amministrazione</h2>
+        <div class="sub-nav">
+            <button class="admin-nav" data-admin="reservations">Prenotazioni</button>
+            <button class="admin-nav" data-admin="users">Utenti</button>
+            <button class="admin-nav" data-admin="laptops">Laptop</button>
+            <button class="admin-nav" data-admin="lockers">Locker</button>
+            <button class="admin-nav" data-admin="models">Modelli</button>
+        </div>
+
+        <div id="admin-reservations">
+            <h3>Tutte le prenotazioni</h3>
+            <fieldset>
+                <legend>Filtri</legend>
+                Stato: <select id="adminResStatus">
+                    <option value="">Tutti</option>
+                    <option value="current">Attive</option>
+                    <option value="past">Concluse</option>
+                </select>
+                &nbsp; <button id="adminResSearch">Cerca</button>
+                <button id="adminResReset">Azzera</button>
+            </fieldset>
+            <div id="adminReservationsData"></div>
+        </div>
+
+        <div id="admin-users" style="display:none">
+            <h3>Utenti</h3>
+            <fieldset>
+                <legend>Filtri</legend>
+                Email: <input type="text" id="adminUserEmail">
+                &nbsp; Ruolo: <select id="adminUserRole">
+                    <option value="">Tutti</option>
+                    <option value="admin">Admin</option>
+                    <option value="teacher">Teacher</option>
+                </select>
+                &nbsp; <button id="adminUserSearch">Cerca</button>
+                <button id="adminUserReset">Azzera</button>
+            </fieldset>
+            <div id="adminUsersData"></div>
+        </div>
+
+        <div id="admin-laptops" style="display:none">
+            <h3>Laptop</h3>
+            <div id="adminLaptopsData"></div>
+        </div>
+
+        <div id="admin-lockers" style="display:none">
+            <h3>Locker</h3>
+            <div id="adminLockersData"></div>
+        </div>
+
+        <div id="admin-models" style="display:none">
+            <h3>Modelli</h3>
+            <div id="adminModelsData"></div>
+        </div>
+    </div>
+    </div><!-- /mainContent -->
+</div><!-- /dashboardContainer -->
+
+<script src="js/config.js?v=23"></script>
+<script src="js/app.js?v=25"></script>
+</body>
+</html>

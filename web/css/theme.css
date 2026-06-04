@@ -1,0 +1,976 @@
+/* ─── ANIMAZIONI ────────────────────────────────────────────── */
+@keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position:  200% center; }
+}
+
+.anim-in {
+    animation: fadeSlideIn .22s cubic-bezier(.22,.61,.36,1) both;
+}
+
+/* ─── VARIABILI ─────────────────────────────────────────────── */
+:root {
+    --bg:           #0d0f14;
+    --bg2:          #161a23;
+    --bg3:          #1e2330;
+    --bg4:          #252c3a;
+    --border:       #2a3040;
+    --text:         #e2e8f4;
+    --text2:        #7c8ba1;
+    --accent:       #4f8ef7;
+    --accent-bg:    rgba(79,142,247,.1);
+    --green:        #22c55e;
+    --green-bg:     rgba(34,197,94,.1);
+    --red:          #f87171;
+    --red-bg:       rgba(248,113,113,.1);
+    --yellow:       #fbbf24;
+    --yellow-bg:    rgba(251,191,36,.1);
+    --radius:       8px;
+    --shadow:       0 1px 3px rgba(0,0,0,.6), 0 4px 12px rgba(0,0,0,.3);
+    --shadow-sm:    0 1px 2px rgba(0,0,0,.4);
+}
+:root.light {
+    --bg:           #f0f4f8;
+    --bg2:          #ffffff;
+    --bg3:          #f1f5f9;
+    --bg4:          #e8edf3;
+    --border:       #dde3ec;
+    --text:         #0f1724;
+    --text2:        #64748b;
+    --accent:       #2563eb;
+    --accent-bg:    rgba(37,99,235,.08);
+    --green:        #16a34a;
+    --green-bg:     rgba(22,163,74,.08);
+    --red:          #dc2626;
+    --red-bg:       rgba(220,38,38,.08);
+    --yellow:       #d97706;
+    --yellow-bg:    rgba(217,119,6,.08);
+    --shadow:       0 1px 3px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.06);
+    --shadow-sm:    0 1px 2px rgba(0,0,0,.06);
+}
+
+/* ─── RESET / BASE ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+/* ─── TYPOGRAPHY ─────────────────────────────────────────────── */
+h1 { font-size: 1.15rem; font-weight: 700; margin: 0; letter-spacing: -.02em; }
+h2 { font-size: .9rem; font-weight: 600; margin: 0 0 18px; text-transform: uppercase; letter-spacing: .07em; color: var(--text2); }
+h3 { font-size: .78rem; font-weight: 600; margin: 0 0 12px; text-transform: uppercase; letter-spacing: .07em; color: var(--text2); }
+p  { margin: 0 0 12px; }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+hr { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+/* ─── LOGIN ──────────────────────────────────────────────────── */
+#loginContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+.login-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 36px 40px;
+    width: 100%;
+    max-width: 360px;
+    box-shadow: var(--shadow);
+}
+
+.login-card h1 { font-size: 1.5rem; margin-bottom: 4px; }
+.login-card .subtitle { color: var(--text2); font-size: .875rem; margin-bottom: 28px; }
+
+.login-card label {
+    display: block;
+    color: var(--text2);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-bottom: 4px;
+}
+
+.login-card input {
+    display: block;
+    width: 100%;
+    margin-bottom: 16px;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+.login-card button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 9px;
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* ─── APP HEADER ─────────────────────────────────────────────── */
+#appHeader {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 52px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 24px;
+}
+
+#appHeader .spacer { flex: 1; }
+#appHeader .user-info { color: var(--text2); font-size: 13px; }
+#appHeader button { padding: 5px 12px; font-size: 13px; }
+
+/* ─── MAIN CONTENT ───────────────────────────────────────────── */
+#mainContent {
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ─── NAV ────────────────────────────────────────────────────── */
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 4px;
+    margin-bottom: 24px;
+}
+
+nav button {
+    background: transparent;
+    border: none;
+    border-radius: calc(var(--radius) - 2px);
+    color: var(--text2);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: background .15s, color .15s;
+    flex-shrink: 0;
+}
+
+nav button:hover { background: var(--bg3); color: var(--text); border: none; }
+
+nav button[aria-current] {
+    background: var(--bg4);
+    color: var(--text);
+    border: none;
+    box-shadow: var(--shadow-sm);
+}
+
+/* ─── SUB-NAV ────────────────────────────────────────────────── */
+.sub-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+}
+
+.res-nav, .admin-nav {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    color: var(--text2);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 18px;
+    margin-bottom: -1px;
+    cursor: pointer;
+    transition: color .15s, border-color .15s;
+}
+
+.res-nav:hover, .admin-nav:hover {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--border);
+    color: var(--text);
+    margin-bottom: -1px;
+}
+
+.res-nav[aria-current], .admin-nav[aria-current] {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--accent);
+    color: var(--accent);
+    margin-bottom: -1px;
+}
+
+/* ─── FORM ELEMENTS ─────────────────────────────────────────── */
+input, select, textarea {
+    background: var(--bg3);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 6px 10px;
+    font-size: 13px;
+    font-family: inherit;
+    transition: border-color .15s, box-shadow .15s;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+input[type="checkbox"] { width: auto; margin-right: 4px; accent-color: var(--accent); }
+
+fieldset {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    background: var(--bg2);
+}
+
+legend {
+    color: var(--text2);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    font-weight: 600;
+    padding: 0 6px;
+}
+
+label { color: var(--text); font-size: 13px; }
+
+/* ─── BUTTONS ────────────────────────────────────────────────── */
+button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg3);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .15s, border-color .15s, color .15s;
+}
+
+button:hover { background: var(--bg4); border-color: var(--text2); color: var(--text); }
+button:active { transform: scale(.97); opacity: .85; }
+
+button.primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+    background-image: linear-gradient(110deg, transparent 40%, rgba(255,255,255,.15) 50%, transparent 60%);
+    background-size: 200% 100%;
+}
+
+button.primary:hover {
+    opacity: .88;
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    animation: shimmer .7s ease;
+}
+
+button.danger { color: var(--red); border-color: rgba(248,113,113,.25); background: var(--red-bg); }
+button.danger:hover { background: var(--red-bg); border-color: var(--red); color: var(--red); }
+
+/* ─── BADGES ─────────────────────────────────────────────────── */
+.badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 99px;
+    letter-spacing: .02em;
+    white-space: nowrap;
+}
+
+.badge-active     { background: var(--green-bg); color: var(--green); }
+.badge-done       { background: var(--bg3);       color: var(--text2); }
+.badge-available  { background: var(--green-bg); color: var(--green); }
+.badge-unavailable{ background: var(--red-bg);   color: var(--red); }
+.badge-admin      { background: var(--accent-bg); color: var(--accent); }
+.badge-teacher    { background: var(--bg3);       color: var(--text2); }
+
+/* ─── BRANDING ───────────────────────────────────────────────── */
+.login-logo {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -.04em;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+
+.login-avo      { color: var(--accent); }
+.login-laptops  { color: var(--text); }
+
+.login-card .subtitle {
+    color: var(--text2);
+    font-size: 12px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.login-footer {
+    color: var(--text2);
+    font-size: 11px;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 0;
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+}
+
+.header-brand {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.header-brand .login-avo,
+.header-brand .login-laptops {
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: -.03em;
+}
+
+.header-school {
+    font-size: 11px;
+    color: var(--text2);
+    font-weight: 500;
+    letter-spacing: .01em;
+    border-left: 1px solid var(--border);
+    padding-left: 10px;
+    margin-left: 2px;
+    white-space: nowrap;
+}
+
+/* ─── AZIONI RAPIDE ─────────────────────────────────────────── */
+.quick-actions {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+@media (max-width: 720px) {
+    .quick-actions { grid-template-columns: 1fr; }
+}
+
+.quick-action-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) + 2px);
+    padding: 22px 24px;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    height: auto;
+    white-space: normal;
+    transition: transform .18s cubic-bezier(.22,.61,.36,1), box-shadow .18s ease, border-color .18s;
+}
+
+.quick-action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,.35);
+    border-color: var(--accent);
+    background: var(--bg2);
+    color: var(--text);
+    opacity: 1;
+}
+
+.quick-action-card:active {
+    transform: scale(.98) translateY(-2px);
+    opacity: 1;
+}
+
+.quick-action-card.primary-card {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    background-image: linear-gradient(135deg, var(--accent) 0%, #6ea8fe 100%);
+    box-shadow: 0 4px 16px rgba(79,142,247,.35);
+}
+
+.quick-action-card.primary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 28px rgba(79,142,247,.45);
+    border-color: transparent;
+    background-image: linear-gradient(135deg, var(--accent) 0%, #6ea8fe 100%);
+    color: #fff;
+}
+
+.qa-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    opacity: .65;
+    margin-bottom: 2px;
+}
+
+.qa-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    line-height: 1.2;
+}
+
+.qa-desc {
+    font-size: 12px;
+    opacity: .6;
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+/* ─── DASHBOARD HOME ─────────────────────────────────────────── */
+.dashboard-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+    margin-top: 20px;
+}
+
+.info-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: transform .18s cubic-bezier(.22,.61,.36,1), box-shadow .18s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.info-card strong {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--text2);
+    font-weight: 600;
+}
+
+.info-card span {
+    font-size: 13px;
+    color: var(--text);
+}
+
+/* Nuova prenotazione: tab con accento visivo */
+.res-nav[data-res="new"] {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.res-nav[data-res="new"]:hover {
+    border-bottom-color: var(--accent);
+    color: var(--accent);
+}
+
+/* ─── TABLE ──────────────────────────────────────────────────── */
+.table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 8px; }
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 13px;
+    background: var(--bg2);
+}
+
+th {
+    background: var(--bg3);
+    color: var(--text2);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    padding: 9px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+}
+
+td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: var(--accent-bg); }
+
+/* ─── BASE ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 20px;
+    margin: 0 auto;
+    max-width: 1400px;
+}
+
+h1 { font-size: 1.4rem; margin: 0 0 12px; }
+h2 { font-size: 1.15rem; margin: 0 0 12px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+h3 { font-size: 1rem; margin: 0 0 10px; color: var(--text2); }
+
+a { color: var(--accent); }
+
+hr { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+
+/* ─── FORM ELEMENTS ────────────────────────────────────────── */
+input, select, textarea {
+    background: var(--bg2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 5px 8px;
+    font-size: 13px;
+    transition: border-color .15s;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+fieldset {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    background: var(--bg2);
+    box-shadow: var(--shadow);
+}
+
+legend {
+    color: var(--text2);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    padding: 0 4px;
+}
+
+/* ─── BUTTONS ──────────────────────────────────────────────── */
+button {
+    background: var(--bg2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 5px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background .15s, border-color .15s, color .15s;
+}
+
+button:hover {
+    background: var(--bg3);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+button:active { opacity: .85; }
+
+/* ─── TABLE ────────────────────────────────────────────────── */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 13px;
+}
+
+th, td {
+    border: 1px solid var(--border);
+    padding: 6px 10px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+th {
+    background: var(--bg3);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--text2);
+}
+
+tbody tr:hover td { background: color-mix(in srgb, var(--accent) 8%, var(--bg)); }
+
+/* ─── NAV ──────────────────────────────────────────────────── */
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+nav button { flex-shrink: 0; }
+
+/* ─── SUB-NAV (res-nav, admin-nav) ─────────────────────────── */
+.res-nav, .admin-nav {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text2);
+}
+
+.res-nav:hover, .admin-nav:hover {
+    background: var(--bg3);
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+/* ─── HEADER BAR ────────────────────────────────────────────── */
+#dashboardContainer > p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 12px;
+    flex-wrap: wrap;
+}
+
+/* ─── NUOVA PRENOTAZIONE: GRUPPI LOCKER ─────────────────────── */
+.locker-group {
+    margin-bottom: 14px;
+}
+
+.locker-group-header {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.locker-group-header strong {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 600;
+}
+
+.locker-group-header span {
+    font-size: 11px;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.locker-group-laptops {
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 var(--radius) var(--radius);
+    overflow: hidden;
+}
+
+.laptop-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background .15s;
+}
+
+.laptop-option:last-child { border-bottom: none; }
+
+.laptop-option:hover { background: var(--accent-bg); }
+
+.laptop-option input[type="checkbox"] {
+    accent-color: var(--accent);
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.laptop-option-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.laptop-option-main {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 500;
+}
+
+.laptop-option-sub {
+    font-size: 11px;
+    color: var(--text2);
+}
+
+.laptop-option-busy {
+    opacity: .72;
+}
+
+.laptop-option-busy .laptop-option-main {
+    color: var(--text2);
+}
+
+.laptop-list-note {
+    font-size: 12px;
+    color: var(--text2);
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 12px;
+    margin-bottom: 12px;
+}
+
+
+/* ── Admin forms ──────────────────────────────────────────────────────────── */
+.admin-form-wrap {
+    margin-bottom: 16px;
+}
+
+.admin-form-inner {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-top: 8px;
+}
+
+.admin-form-inner h4 {
+    margin: 0 0 12px;
+    color: var(--text1);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.admin-form-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.admin-form-grid > div,
+.admin-form-grid > label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--text2);
+}
+
+.admin-form-grid input[type="text"],
+.admin-form-grid select {
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg2);
+    color: var(--text1);
+    font-size: 13px;
+    min-width: 160px;
+}
+
+/* Action cell: multiple buttons with gap */
+td.action-cell {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* ─── FINAL LAYOUT OVERRIDES ─────────────────────────────────────────────── */
+#loginContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: none;
+    min-height: 100vh;
+    margin: 0;
+    padding: 24px;
+}
+
+.login-card {
+    width: min(100%, 420px);
+    margin: 0;
+}
+
+#loginForm,
+#registerForm {
+    width: 100%;
+}
+
+.login-card input,
+.login-card button,
+.login-card .primary,
+.login-card .secondary {
+    width: 100%;
+}
+
+@media (max-width: 900px) {
+    body {
+        max-width: none;
+        padding: 12px;
+    }
+
+    #mainContent {
+        padding: 14px 0 0;
+    }
+
+    #appHeader {
+        height: auto;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 10px 12px;
+    }
+
+    .header-brand {
+        flex-wrap: wrap;
+        row-gap: 4px;
+    }
+
+    .header-school {
+        white-space: normal;
+        border-left: none;
+        padding-left: 0;
+        margin-left: 0;
+    }
+
+    nav,
+    .sub-nav {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+
+    nav button,
+    .res-nav,
+    .admin-nav {
+        white-space: nowrap;
+    }
+
+    fieldset {
+        padding: 12px;
+    }
+
+    .admin-form-grid {
+        gap: 10px;
+    }
+
+    .admin-form-grid > div,
+    .admin-form-grid > label {
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+
+    .admin-form-grid input[type="text"],
+    .admin-form-grid select {
+        width: 100%;
+        min-width: 0;
+    }
+}
+
+@media (max-width: 640px) {
+    body {
+        padding: 0;
+    }
+
+    #loginContainer {
+        inset: 0;
+        min-height: 100vh;
+        padding: 16px;
+    }
+
+    .login-card {
+        max-width: 100%;
+        padding: 24px 18px;
+        border-radius: 12px;
+    }
+
+    #appHeader {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    #appHeader .spacer {
+        display: none;
+    }
+
+    .header-brand,
+    #appHeader .user-info {
+        grid-column: 1 / -1;
+        min-width: 0;
+    }
+
+    #appHeader .user-info,
+    #appHeader button {
+        width: 100%;
+    }
+
+    #appHeader button {
+        min-width: 0;
+        justify-content: center;
+        white-space: normal;
+    }
+
+    #mainContent {
+        padding: 12px;
+    }
+
+    .quick-actions,
+    .dashboard-info {
+        grid-template-columns: 1fr;
+    }
+
+    table {
+        min-width: 640px;
+    }
+
+    td.action-cell {
+        min-width: 180px;
+    }
+}
