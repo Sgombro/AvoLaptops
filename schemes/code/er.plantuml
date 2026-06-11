@@ -35,6 +35,8 @@ relationship reservation {
   time_start
   time_end
   status
+  class
+  classroom
 }
 
 relationship described  {
