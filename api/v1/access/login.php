@@ -1,41 +1,23 @@
 <?php
-// ===== DEBUG - Mostra TUTTI gli errori =====
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-// ===== FINE DEBUG =====
-
-require_once '../connections/connection.php';
 
 function base64url_encode($data) {
     return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
 }
 
-// ===== MODIFICA: Accetta sia JSON che POST normale =====
-// Controlla se la richiesta è in JSON
-$input = file_get_contents('php://input');
-$json_data = json_decode($input, true);
-
-if ($json_data && isset($json_data['email'], $json_data['password'])) {
-    // Richiesta in formato JSON (dal tuo HTML)
-    $email = $json_data['email'];
-    $password = $json_data['password'];
-} else {
-    // Richiesta in formato POST normale (da Postman form-data)
-    $email = $_POST['email'] ?? null;
-    $password = $_POST['password'] ?? null;
-}
-// ===== FINE MODIFICA =====
-
 //verifica credenziali
-if(!isset($email, $password)){
+if(!isset($_POST['email'], $_POST["password"])){
     $payload["status"] = "401 Unauthorized";
     header("HTTP/1.1 401 Unauthorized");
     $payload["message"] = "Credenziali non valide";
     echo json_encode($payload);
     exit();
 }
+//credenziali
+$email = $_POST['email'];
 
-$pass = hash("sha256", $password);
+$pass = hash("sha256", $_POST["password"]);
+
+//$pass = $_POST["password"];
 
 $query = "SELECT * from users WHERE email = ? AND password = ?";
 
@@ -48,6 +30,7 @@ mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 
 $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
 
 foreach($rows as $row){
     if(!$row['verified']){
@@ -81,7 +64,7 @@ if (count($rows) == 0) {
     ];
     $jwt["signature"] = "";
 
-    $secret = "CHANGE_ME_JWT_SECRET";
+    $secret = "ILOVEBARCELONAPLSIWANTTOGETBACK";
 
     foreach($rows as $row){
         $jwt["payload"]["id-user"] = $row["id_user"];
@@ -104,6 +87,5 @@ if (count($rows) == 0) {
 
     $payload["message"] = "Successful";
     $payload["token"] = $jwt_token;
-}
 
-echo json_encode($payload);
+}

@@ -58,7 +58,7 @@ if(!isset(getallheaders()["token"])){
 
 $_SERVER["token"] = getallheaders()["token"];
 
-$secret = "CHANGE_ME_JWT_SECRET";
+$secret = "ILOVEBARCELONAPLSIWANTTOGETBACK";
 $token_decoded = decode_jwt($_SERVER["token"], $secret, $called_resource);
 
 if (!$token_decoded["valid"]) {

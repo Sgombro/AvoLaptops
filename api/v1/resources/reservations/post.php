@@ -1,6 +1,13 @@
 <?php
 include __DIR__ . "/../../checks/check_token.php";
 
+if(!isset($_POST['class'], $_POST['classroom'])){
+    $payload["status"] = "400 Bad Request";
+    $payload["message"]  = "Inserire la classe o l'aula";
+    header("HTTP/1.1 400 Bad Request");
+    echo json_encode($payload);
+    exit();
+}
 
 
 // ── Validazione data ──────────────────────────────────────────────────────────
@@ -73,27 +80,38 @@ $laptopIds = $_POST["id-laptop"];
 // ── Avvia transazione per evitare race condition ──────────────────────────────
 mysqli_begin_transaction($conn);
 
-// ── Controlla esistenza e sovrapposizione temporale per ogni laptop ───────────
-$conflicted = [];
+// ── Controlla esistenza, manutenzione e sovrapposizione temporale ─────────────
+$conflicted  = [];
+$maintenance = [];
 
 foreach ($laptopIds as $idLaptop) {
 
-    // Verifica che il laptop esista (con lock di riga per la transazione)
-    $checkStmt = mysqli_prepare($conn, "SELECT id_laptop FROM laptops WHERE id_laptop = ? FOR UPDATE");
+    // Verifica che il laptop esista e legge il suo status (con lock di riga)
+    $checkStmt = mysqli_prepare($conn, "SELECT id_laptop, status FROM laptops WHERE id_laptop = ? FOR UPDATE");
     mysqli_stmt_bind_param($checkStmt, "s", $idLaptop);
     mysqli_stmt_execute($checkStmt);
-    if (!mysqli_fetch_assoc(mysqli_stmt_get_result($checkStmt))) {
+    $laptop = mysqli_fetch_assoc(mysqli_stmt_get_result($checkStmt));
+
+    if (!$laptop) {
         mysqli_rollback($conn);
-        $payload["status"] = "404 Not Found";
-        $payload["message"]  = "Laptop $idLaptop non trovato.";
+        $payload["status"]  = "404 Not Found";
+        $payload["message"] = "Laptop $idLaptop non trovato.";
         header("HTTP/1.1 404 Not Found");
         echo json_encode($payload);
         exit();
     }
 
+    // ── Blocca la prenotazione se il laptop è in manutenzione ────────────────
+    // Un laptop in manutenzione non può essere prenotato indipendentemente
+    // dalla disponibilità oraria: l'evento ev_laptop_available non tocca
+    // i laptop in maintenance, quindi questo status è permanente finché
+    // un admin non lo rimuove manualmente.
+    if ($laptop["status"] === "maintenance") {
+        $maintenance[] = $idLaptop;
+        continue; // inutile controllare l'overlap per un laptop in manutenzione
+    }
+
     // Verifica sovrapposizione temporale nella stessa data
-    // Due intervalli [A_start, A_end) e [B_start, B_end) si sovrappongono se:
-    //   A_start < B_end  AND  A_end > B_start
     $overlapStmt = mysqli_prepare($conn,
         "SELECT id_reservation FROM reservations
          WHERE id_laptop   = ?
@@ -115,10 +133,20 @@ foreach ($laptopIds as $idLaptop) {
     }
 }
 
+// ── Risposta per laptop in manutenzione (priorità sul conflitto orario) ───────
+if (count($maintenance) > 0) {
+    mysqli_rollback($conn);
+    $payload["status"]  = "409 Conflict";
+    $payload["message"] = "I seguenti laptop sono in manutenzione e non prenotabili: " . implode(", ", $maintenance);
+    header("HTTP/1.1 409 Conflict");
+    echo json_encode($payload);
+    exit();
+}
+
 if (count($conflicted) > 0) {
     mysqli_rollback($conn);
-    $payload["status"] = "409 Conflict";
-    $payload["message"]  = "I seguenti laptop hanno già una prenotazione in quell'orario: " . implode(", ", $conflicted);
+    $payload["status"]  = "409 Conflict";
+    $payload["message"] = "I seguenti laptop hanno già una prenotazione in quell'orario: " . implode(", ", $conflicted);
     header("HTTP/1.1 409 Conflict");
     echo json_encode($payload);
     exit();
@@ -129,24 +157,32 @@ $result = mysqli_query($conn, "SELECT COALESCE(MAX(id_reservation), 0) + 1 AS ne
 $nextId = mysqli_fetch_assoc($result)["next_id"];
 
 // ── Inserisci una riga per ogni laptop con lo stesso id_reservation ───────────
-// NOTA: lo status del laptop NON viene toccato qui.
-//       Ci pensano gli eventi schedulati ev_laptop_unavailable / ev_laptop_available
-//       che girano ogni minuto e riflettono lo stato reale in tempo reale.
 $stmtR = mysqli_prepare($conn,
-    "INSERT INTO reservations (id_reservation, id_user, id_laptop, date, time_start, time_end, status)
-     VALUES (?, ?, ?, ?, ?, ?, 'active')"
+    "INSERT INTO reservations (id_reservation, id_user, id_laptop, date, time_start, time_end, status, class, classroom)
+     VALUES (?, ?, ?, ?, ?, ?, 'active', ?, ?)"
 );
 
-foreach ($laptopIds as $idLaptop) {
-    mysqli_stmt_bind_param($stmtR, "iissss",
-        $nextId,
-        $token_decoded["payload"]["id-user"],
-        $idLaptop,
-        $_POST["date"],
-        $_POST["time-start"],
-        $_POST["time-end"]
-    );
-    mysqli_stmt_execute($stmtR);
+try {
+    foreach ($laptopIds as $idLaptop) {
+        mysqli_stmt_bind_param($stmtR, "iissssss",
+            $nextId,
+            $token_decoded["payload"]["id-user"],
+            $idLaptop,
+            $_POST["date"],
+            $_POST["time-start"],
+            $_POST["time-end"],
+            $_POST["class"],
+            $_POST["classroom"]
+        );
+        mysqli_stmt_execute($stmtR);
+    }
+} catch (mysqli_sql_exception $ex) {
+    mysqli_rollback($conn);
+    $payload["status"]  = "400 Bad Request";
+    $payload["message"] = "Stai inserendo dati errati. (Possibile class o classroom)";
+    header("HTTP/1.1 400 Bad Request");
+    echo json_encode($payload);
+    exit();
 }
 
 mysqli_commit($conn);
@@ -154,5 +190,4 @@ mysqli_commit($conn);
 $payload["status"]         = "201 Created";
 $payload["id_reservation"] = $nextId;
 header("HTTP/1.1 201 Created");
-echo json_encode($payload);
 ?>

@@ -42,50 +42,6 @@ foreach($row as $attribute => $value){
     }
 }
 
-$availabilityDate = isset($_GET["date"]) ? $_GET["date"] : null;
-$availabilityStart = isset($_GET["time-start"]) ? $_GET["time-start"] : null;
-$availabilityEnd = isset($_GET["time-end"]) ? $_GET["time-end"] : null;
-
-if ($availabilityDate !== null || $availabilityStart !== null || $availabilityEnd !== null) {
-    if ($availabilityDate === null || $availabilityStart === null || $availabilityEnd === null) {
-        $payload["status"] = "400 Bad Request";
-        $payload["message"] = "Parametri di disponibilita' incompleti.";
-        header("HTTP/1.1 400 Bad Request");
-        echo json_encode($payload);
-        exit();
-    }
-
-    $dateOk = preg_match('/^\d{4}-\d{2}-\d{2}$/', $availabilityDate);
-    $timeOk = preg_match('/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/', $availabilityStart)
-        && preg_match('/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/', $availabilityEnd);
-    if (!$dateOk || !$timeOk || $availabilityEnd <= $availabilityStart) {
-        $payload["status"] = "400 Bad Request";
-        $payload["message"] = "Data o orari non validi.";
-        header("HTTP/1.1 400 Bad Request");
-        echo json_encode($payload);
-        exit();
-    }
-
-    $availabilityClause = "NOT EXISTS (SELECT 1 FROM reservations r "
-        . "WHERE r.id_laptop = laptops.id_laptop "
-        . "AND r.date = ? "
-        . "AND r.status = 'active' "
-        . "AND r.time_start < ? "
-        . "AND r.time_end > ?)";
-
-    if ($params_count == false) {
-        $params_count = true;
-        $params = $availabilityClause . " ";
-    } else {
-        $params .= "AND " . $availabilityClause . " ";
-    }
-
-    $params_type .= "sss";
-    $params_value[] = $availabilityDate;
-    $params_value[] = $availabilityEnd;
-    $params_value[] = $availabilityStart;
-}
-
 if($params_count)
     $params = " WHERE " . $params;
 else if($numelements == 3 and $uri_elements[0] == "lockers"){
@@ -136,7 +92,7 @@ foreach($rows as $row){
     if($counter >= 0 and $counter <= 1){
             $laptop += [$attribute => $element];
         }    
-        else if($counter >= 2 and $counter <= 8){
+        else if($counter >= 2 and $counter <= 7){
                 $laptop["model"] += [$attribute => $element];
             }
 
